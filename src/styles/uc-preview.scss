@@ -1,0 +1,371 @@
+.uc-preview {
+  background-color: #f9f9f9;
+  font-size: 18px;
+  font-family: 'Microsoft Yahei','Simsun','Gotham-Medium',Arial;
+  color: #333;
+  text-size-adjust: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+  html,body,span,div,p,a,table,tbody,td,h1,h2,h3,img,form,font,strong,b,i,dl,dt,dd,ol,ul,li,dl,dd,dt,iframe,label,blockquote,input,em,dfn,button {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-style: normal;
+  }
+
+  body.large {
+    font-size: 159% !important;
+    line-height: 159% !important;
+  }
+
+  body.big {
+    font-size: 129% !important;
+    line-height: 159% !important;
+  }
+
+  body.normal {
+    font-size: 100% !important;
+    line-height: 159% !important;
+  }
+
+  body.small {
+    font-size: 70% !important;
+    line-height: 159% !important;
+  }
+
+  img {
+    vertical-align: middle;
+    border: none;
+  }
+
+  header,nav,footer,section,article,aside {
+    display: block;
+  }
+
+  button,input,select,textarea {
+    font-size: 100%;
+    font-family: inherit;
+  }
+
+  p {
+    word-wrap: break-word;
+    margin-top: 0;
+    text-align: justify;
+    margin-bottom: 25px;
+  }
+
+  /*14*/
+  a {
+    text-decoration: none;
+    border: none;
+    outline: none;
+  }
+
+  a:link {
+    text-decoration: none;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .fn-hide {
+    display: none !important;
+  }
+
+  .clear {
+    clear: both;
+  }
+
+  .clearfix {
+    zoom: 1;
+  }
+
+  .clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: "";
+    clear: both;
+    height: 0;
+  }
+
+  #SmNewsBar {
+    height: 45px;
+    display: none;
+  }
+
+  #SmNewsBar #logo {
+    display: inline-block;
+    height: 45px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #SmNewsBar #logo img {
+    height: 28px;
+    margin: 9px 15px;
+    display: block;
+  }
+
+  header {
+    padding: 15px 15px 25px;
+    display: block;
+  }
+
+  header h1 {
+    display: block;
+    font-size: 20px;
+    font-weight: bolder;
+    color: #333;
+    margin: 0 0 10px;
+    line-height: 30px;
+  }
+
+  header .subtitle {
+    position: relative;
+  }
+
+  header .subtitle,header #toggle_img {
+    color: #b0b0b0;
+    font-size: 14px;
+    height: 16px;
+  }
+
+  /*font-size:11px;color:#747474*/
+  header .comment_totoal_cnt {
+    font-size: 10px;
+    float: right;
+    color: #fff;
+    padding: 1px 5px;
+    background: #de3232;
+    display: none;
+    -moz-border-radius: 1px 1px 0;
+    -webkit-border-radius: 1px 1px 0 1px;
+    border-radius: 1px 1px 0 1px;
+  }
+
+  header .comment_totoal_cnt:after {
+    content: " 评论";
+  }
+
+  header .subtitle time + a,header .subtitle a + time {
+    padding-left: 10px;
+  }
+
+  header #toggle_img {
+    position: absolute;
+    right: 72px;
+    top: 0;
+    padding-left: 20px;
+    // background: url(../images/ic_mark_pic.png) no-repeat left 0;
+    background-size: 15px 15px;
+    display: none;
+  }
+
+  article {
+    padding: 0 15px;
+    line-height: 30px;
+  /*1.5em;*/
+    word-wrap: break-word;
+    text-align: justify;
+    overflow: hidden;
+    padding-bottom: 10px;
+  }
+
+  article table {
+    margin: 0 auto;
+    font-size: 14px;
+    text-align: center;
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+
+  article table tr td {
+    border: 1px solid #dadada;
+    padding: 2px;
+  }
+
+  .video_container {
+    display: block;
+    width: 100%;
+    position: relative;
+    background: #000;
+    margin: 10px auto;
+  }
+
+  .video_container video {
+    margin: 10px auto;
+    display: block;
+    min-width: 290px;
+    min-height: 200px;
+    max-width: 100%;
+  }
+
+  .video_container .cover img {
+    width: 100%;
+    display: block;
+    min-height: 150px;
+  }
+
+  .video_container .trigger {
+    position: absolute;
+    left: 50%;
+    margin-left: -30px;
+    top: 50%;
+    margin-top: -30px;
+    display: block;
+    z-index: 999;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    // background: url(../images/video.png) no-repeat left top;
+    background-size: 60px;
+  }
+
+  .video_container .trigger:active {
+    background-position: 0 -60px;
+  }
+
+  .video_container .text {
+    display: none;
+  }
+
+  .relate_video table {
+    width: 100%;
+  }
+
+  .relate_video table tr td {
+    text-align: center;
+    vertical-align: top;
+    padding: 0;
+    width: 33.3%;
+  }
+
+  .relate_video table tr td:first-child {
+    text-align: left;
+  }
+
+  .relate_video table tr td:last-child {
+    text-align: right;
+  }
+
+  .relate_video dl {
+    margin: 0;
+  }
+
+  .relate_video dt,.relate_video dd {
+    text-align: center;
+  }
+
+  .relate_video dt {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .relate_video dt img {
+    width: 90px;
+    height: 70px;
+    overflow: hidden;
+    pointer-events: none;
+    // background: url(../images/image_bg_day.png) #efefef no-repeat center center;
+    background-size: 42px 11px;
+  }
+
+  .relate_video dd {
+    padding: 0;
+    margin: 0;
+  }
+
+  .relate_video a:link {
+    font-size: 12px;
+    color: #454545;
+    display: inline-block;
+  }
+
+  .relate_video a:visited {
+    color: #999;
+  }
+
+  .tt_ad_img {
+    margin: 0 15px 30px;
+  }
+
+  .tt_ad_img img {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  article img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    // background: url(../images/image_bg_day.png) #efefef no-repeat center center;
+    background-size: 83px 21px;
+  }
+
+  p,article,article table,h1,h2,h3,h4,h5,h6 {
+    color: #333;
+  }
+
+  h1,h2,h3,h4,h5,h6 {
+    font-size: 1em;
+    font-weight: 700;
+    color: #333;
+    word-wrap: break-word;
+    margin: 10px 0;
+  }
+
+  blockquote {
+    border-left: 4px solid #eee;
+    padding-left: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  pre,code {
+    font-size: 12px;
+    line-height: 1.5em;
+    background: #eee;
+    padding: 10px;
+  }
+
+  /*转码tip*/
+  .tc_tip {
+    margin: 10px 15px;
+  }
+
+  .tc_tip a {
+    font-size: 14px;
+    color: #999;
+    background: #f0f0f0;
+    display: block;
+    padding: 7px 0;
+    text-align: center;
+  }
+
+  /*uc-iflow*/
+  .font_m article {
+    font-size: 18px;
+  }
+
+  .font_m header h1 {
+    font-size: 20px;
+  }
+
+  .gallery-list {
+    display: none;
+  }
+
+  /*白天模式*/
+  header,
+  article,
+  section {
+    background-color: #f9f9f9;
+  }
+}

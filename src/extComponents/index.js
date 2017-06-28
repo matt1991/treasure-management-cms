@@ -1,0 +1,1 @@
+export MsgMulti from './MsgMulti';

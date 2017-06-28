@@ -1,0 +1,40 @@
+$gap: 10px;
+:local(.Field) .key {
+  text-align: justify;
+  text-align-last: justify;
+  width: 60px;
+  display: inline-block;
+  margin-bottom: $gap;
+  color: #666;
+}
+
+
+.field {
+  display: inline-block;
+  width: 75px;
+  margin-bottom: $gap;
+  color: #666;
+}
+
+.container {
+  min-width: 400px;
+  position: relative;
+  height: 80vh;
+  padding: 15px;
+  // overflow: hidden;
+}
+
+.footer {
+  position: absolute;
+  bottom: 60px;
+  right:10px;
+}
+
+.inline {
+  width: 20px;
+  display:inline-block;
+}
+
+.item {
+  display:inline-block;
+}
