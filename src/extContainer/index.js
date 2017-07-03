@@ -9,6 +9,8 @@ import * as Sadmin from './Sadmin';
 
 import * as Orders from './Orders';
 
+import * as Setting from './Setting';
+
 
 
 
@@ -22,4 +24,5 @@ export default {
   TimelyLotteries,
   FullLotteries,
   Orders,
+  Setting
 };

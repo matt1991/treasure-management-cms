@@ -9,6 +9,7 @@ export const rootChildRoutes = [
   require('#/extRoutes/timelyLotteries').default,
   require('#/extRoutes/fullLotteries').default,
   require('#/extRoutes/orders').default,
+  require('#/extRoutes/setting').default,
 ];
 export default {
   path: '/',
