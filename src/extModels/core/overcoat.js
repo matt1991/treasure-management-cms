@@ -8,9 +8,16 @@ export default {
   state: {
     createAccumulatedSettingModal:false,
     editAccumulatedSettingModal:false,
+    createTimelySettingModal:false,
+    editTimelySettingModal:false,
+    createFullSettingModal:false,
+    editFullSettingModal:false,
+    createBannerModal:false,
+    editBannerModal:false,
     editFullSetting:{},
     editTimelySetting:{},
     editAccumulatedSetting:{},
+    editBanner:{},
   },
   reducers: {
     ['overcoat/createAccumulatedSetting_modal/show'] (state, {payload}) {
@@ -55,6 +62,22 @@ export default {
     ['overcoat/editFullSetting_modal/close'] (state, {payload}) {
       return { ...state, editFullSettingModal: false };
     },
+
+    ['overcoat/createBanner_modal/show'] (state, {payload}) {
+      return { ...state, createBannerModal: true };
+    },
+    ['overcoat/createBanner_modal/close'] (state, {payload}) {
+      return { ...state, createBannerModal: false };
+    },
+    ['overcoat/editBanner_modal/show'] (state, {payload}) {
+      return { ...state, editBannerModal: true, };
+    },
+    ['overcoat/editBanner_modal/close'] (state, {payload}) {
+      return { ...state, editBannerModal: false };
+    },
+
+
+
 
 
 

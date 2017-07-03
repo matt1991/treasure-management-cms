@@ -14,6 +14,7 @@ import accumulatedLottery from './accumulatedLottery';
 import timelyLottery from './timelyLottery';
 import fullLottery from './fullLottery';
 import order from './order';
+import banner from './banner';
 
 
 
@@ -33,4 +34,5 @@ export default [
   timelyLottery,
   fullLottery,
   order,
+  banner
 ];

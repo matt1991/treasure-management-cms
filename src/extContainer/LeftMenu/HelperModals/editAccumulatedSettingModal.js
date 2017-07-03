@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicker,DatePicker} from 'antd';
+import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicker,DatePicker,Upload} from 'antd';
 const Option = Select.Option;
 import moment from 'moment';
 import { accumulatedLotterySettingToServerData, accumulatedLotterySettingToLocalData } from '#/utils/dataProcessor';
@@ -38,6 +38,9 @@ export default class EditAccumulatedSettingModal extends React.Component {
     return (
       <Modal visible={overcoat.editAccumulatedSettingModal} {...modalConfig}>
          <Form layout="horizontal">
+           <Form.Item label="ID"  {...formItemLayout} >
+               {getFieldDecorator('id',{rules:[{required:true}], initialValue:editAccumulatedSetting.id})(<Input disabled />)}
+           </Form.Item>
             <Form.Item label="名字"  {...formItemLayout} >
                 {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}], initialValue:editAccumulatedSetting.name})(<Input placeholder="请输入名字" />)}
             </Form.Item>

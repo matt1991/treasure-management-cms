@@ -32,8 +32,6 @@ export default {
       })
       return {...state, ...{settingList}};
     },
-
-
   },
 
   effects : {

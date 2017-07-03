@@ -9,6 +9,11 @@ import EditTimelySettingModal from './editTimelySettingModal';
 import CreateFullSettingModal from './createFullSettingModal';
 import EditFullSettingModal from './editFullSettingModal';
 
+import CreateBannerModal from './createBannerModal';
+
+import EditBannerModal from './editBannerModal';
+
+
 
 
 export default class HelperModals extends React.Component {
@@ -45,6 +50,8 @@ export default class HelperModals extends React.Component {
           <EditTimelySettingModal key={this.key++} {...this.props}/>
           <CreateFullSettingModal key={this.key++} {...this.props}/>
           <EditFullSettingModal key={this.key++} {...this.props}/>
+          <CreateBannerModal key={this.key++} {...this.props}/>
+          <EditBannerModal key={this.key++} {...this.props}/>
       </div>
     );
   }

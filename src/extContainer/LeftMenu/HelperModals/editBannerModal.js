@@ -3,18 +3,17 @@ import { connect } from 'react-redux';
 import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicker,DatePicker, Upload} from 'antd';
 const Option = Select.Option;
 import moment from 'moment';
-import {FILE_UPLOAD_URL_V2} from '#/extConstants';
+import {FILE_UPLOAD_URL_V2, LOCATION_MAP, DEVICE_MAP} from '#/extConstants';
 
-import { fullLotterySettingToServerData, fullLotterySettingToLocalData } from '#/utils/dataProcessor';
-
+import { bannerToServerData, bannerToLocalData } from '#/utils/dataProcessor';
 
 
 @Form.create()
 @connect(state => ({
   account: state.account,
-  overcoat: state.overcoat
+  banner:state.banner
 }))
-export default class EditFullSettingModal extends React.Component {
+export default class EditBannerModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,27 +21,18 @@ export default class EditFullSettingModal extends React.Component {
         uid: -1,
         name: 'xxx.png',
         status: 'done',
-        url:   props.overcoat.editFullSetting.img_url,
-        thumbUrl:  props.overcoat.editFullSetting.img_url,
-        rel_url : props.overcoat.editFullSetting.img_url,
+        url:   props.overcoat.editBanner.img_url,
+        thumbUrl:  props.overcoat.editBanner.img_url,
+        rel_url : props.overcoat.editBanner.img_url,
       }]
     }
   }
 
   render() {
-    const { overcoat, form } = this.props;
-    const {editFullSetting} = overcoat;
+    const { overcoat, form,banner } = this.props;
+    const {editBanner} = overcoat;
+
     const modalConfig = this.getModalConfig();
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-      },
-    };
 
     const uploadConfig = {
       name : "f",
@@ -53,47 +43,44 @@ export default class EditFullSettingModal extends React.Component {
       onChange : this.handleUpload,
       onRemove : this.handleRemovePic,
     };
+
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 14 },
+      },
+    };
     const {getFieldDecorator} = form;
 
     return (
-      <Modal visible={overcoat.editFullSettingModal} {...modalConfig}>
+      <Modal visible={overcoat.editBannerModal} {...modalConfig}>
          <Form layout="horizontal">
-           <Form.Item label="ID"  {...formItemLayout} >
-               {getFieldDecorator('id',{rules:[{required:true}], initialValue:editFullSetting.id})(<Input disabled />)}
+           <Form.Item label ="ID" {...formItemLayout}>
+              {getFieldDecorator('id',{rules:[{required:true,message:'请输入次序'}], initialValue:editBanner.id})(<Input type="string" disabled/>)}
            </Form.Item>
-            <Form.Item label="名字"  {...formItemLayout} >
-                {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}], initialValue:editFullSetting.name})(<Input placeholder="请输入名字" />)}
-            </Form.Item>
-            <Form.Item label="开奖规则"  {...formItemLayout} >
-                {getFieldDecorator('rule',{rules:[{required:true}], initialValue:editFullSetting.rule})(<Select placeholder="请选择开奖规则" >
-                  <Option key="1">重庆时时彩</Option>
-                  <Option key="2">下注时间</Option>
-                  <Option key="3">重庆时时彩没有数据用下注时间</Option>
+            <Form.Item label="位置"  {...formItemLayout} >
+                {getFieldDecorator('location',{rules:[{required:true,message:'请选择位置'}],initialValue:editBanner.location})(<Select placeholder="请选择位置" >
+                  {LOCATION_MAP.map((location) => (<Option key={location.key}>{location.des}</Option>))}
                 </Select>)}
             </Form.Item>
-            <Form.Item  label="奖池累计天数" {...formItemLayout} >
-                {getFieldDecorator('period',{rules:[{required:true,message:'请再次输入密码'},{validator:this.checkNumber}], initialValue:editFullSetting.period})(<Input type="string" placeholder="累计天数" />)}
+            <Form.Item label="设备"  {...formItemLayout} >
+                {getFieldDecorator('device',{rules:[{required:true, message:"请选择设备"}], initialValue:editBanner.device})(<Select placeholder="请选择设备" >
+                  {DEVICE_MAP.map((device) => (<Option key={device.key}>{device.des}</Option>))}
+                </Select>)}
             </Form.Item>
-            <Form.Item  label="截止时间" {...formItemLayout} >
-                {getFieldDecorator('end_time',{rules:[{required:true,message:'请输入电话'}]})(<TimePicker defaultValue={moment(editFullSetting.end_time, 'HH:mm:ss')} size="large" />)}
+            <Form.Item  label="次序" {...formItemLayout} >
+                {getFieldDecorator('index',{rules:[{required:true,message:'请输入次序'},{validator:this.checkNumber}], initialValue:editBanner.index})(<Input type="string" placeholder="请输入次序" />)}
             </Form.Item>
-            <Form.Item  label="自动开奖" {...formItemLayout} >
-                {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox defaultChecked={editFullSetting.auto_open} />)}
-            </Form.Item>
-            <Form.Item label="产品图片" {...formItemLayout}>
+            <Form.Item label="图片" {...formItemLayout}>
                 {getFieldDecorator('img_url', {rules:[{required:true, message:'请选择图片'}]})(<Upload {...uploadConfig} fileList={this.state.fileList}>
                   <Icon type="plus" />
                   <div className="ant-upload-text">点击上传</div>
                 </Upload>)}
-            </Form.Item>
-            <Form.Item  label="自动续期" {...formItemLayout} >
-                {getFieldDecorator('auto_renew',{rules:[{required:true}]})(<Checkbox defaultChecked={editFullSetting.auto_renew} />)}
-            </Form.Item>
-            <Form.Item  label="份额单价" {...formItemLayout} >
-                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}], initialValue:editFullSetting.unit_price})(<Input type="string" placeholder="份额单价" />)}
-            </Form.Item>
-            <Form.Item  label="游戏杀数" {...formItemLayout} >
-                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}], initialValue:editFullSetting.lucky_rate})(<Input type="string" placeholder="游戏杀数" />)}
             </Form.Item>
         </Form>
       </Modal>
@@ -125,12 +112,28 @@ export default class EditFullSettingModal extends React.Component {
     return {
       footer,
       width: 600,
-      title: "新建配置",
+      title: "新增banner",
       onCancel: this.close,
       maskClosable: false,
     };
   }
 
+
+
+
+  checkConfirmPwd = (rule, value, callback) => {
+    const {form} = this.props;
+    if (value) {
+      const password = form.getFieldValue('new_password');
+      if (value && value !== password) {
+        callback(new Error('输入的密码不一致'));
+      } else {
+        callback();
+      }
+    } else {
+      callback();
+    }
+  }
 
   checkNumber = (rule, value, callback) => {
     const {form} = this.props;
@@ -145,18 +148,6 @@ export default class EditFullSettingModal extends React.Component {
     }
   }
 
-  checkFloat = (rule, value, callback) => {
-    const {form} = this.props;
-    if (value) {
-      if (value !== parseFloat(value)+"") {
-        callback(new Error('请输入数字'));
-      } else {
-        callback();
-      }
-    } else {
-      callback();
-    }
-  }
 
   handleUpload = info => {
     // retain the last uploaded one
@@ -182,6 +173,7 @@ export default class EditFullSettingModal extends React.Component {
     this.props.form.setFieldsValue({img_url : fileList[0].rel_icon});
   }
 
+
   handleRemovePic = info => {
     console.debug('handleRemovePic')
     this.props.form.setFieldsValue({img_url : ''});
@@ -190,21 +182,23 @@ export default class EditFullSettingModal extends React.Component {
   }
 
 
+
+
+
   next = e => {
     e.stopPropagation();
     const { overcoat, form } = this.props;
-    const { editMember } = overcoat;
 
     form.validateFieldsAndScroll((errors, values) => {
       if (!!errors) return;
       const formValue = form.getFieldsValue();
       this.props.dispatch({
-        type:`fullLottery/settings/update`,
-        payload:fullLotterySettingToServerData(formValue)
+        type:`banner/update`,
+        payload:bannerToServerData(formValue)
       })
+
       this.props.dispatch({
-        type: 'overcoat/editFullSetting_modal/close',
-        payload:{editFullSetting:{}}
+        type: 'overcoat/editBanner_modal/close'
       });
     });
   }
@@ -214,8 +208,7 @@ export default class EditFullSettingModal extends React.Component {
     const { overcoat, form } = this.props;
 
     this.props.dispatch({
-      type: 'overcoat/editFullSetting_modal/close',
-      payload:{editFullSetting:{}}
+      type: 'overcoat/editBanner_modal/close'
     });
   }
 }

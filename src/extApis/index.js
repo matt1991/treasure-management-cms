@@ -50,5 +50,8 @@ export const fullLotteries = () => Endpoint({path: '/fullLotteries'});
 
 export const order = () => Endpoint({path: '/order'});
 
+export const banner = () => Endpoint({path:'/banners'});
+
+
 
 export const notifications = () => Endpoint({path: '/notifications'});

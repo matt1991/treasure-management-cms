@@ -11,9 +11,9 @@ export const ROLE_ADMIN = 'admin';
 export const ROLE_GUEST_ADMIN = 'guest_admin';
 export const ROLE_SADMIN = 'sadmin';
 
-export const API_DOMAIN = '116.251.229.195';//'172.20.2.169'; yy.vpcdn.com zbadmin.vpcdn.com
+export const API_DOMAIN = '172.20.2.169';//'172.20.2.169'; yy.vpcdn.com zbadmin.vpcdn.com
 
-export const UPLOAD_API = '116.251.229.195';
+export const UPLOAD_API = '172.20.2.169';
 
 
 //export const API_ROOT_URL = `http://${API_DOMAIN}:9099`;//'http://172.20.2.181:9099';//'http://172.20.2.181:9099';//
@@ -56,15 +56,7 @@ export const CHAT_FORBID_TYPE = {
 };
 
 
-
-
 //配置
-export const FIXED_PID = 'TST';
-export const FIXED_REWARDS_MODE = true;
-export const FIXED_REWARDS_MAP = {
-  10    : {name : '鲜花', fn:'item_01.png'},
-  50    : {name : '名牌包', fn: 'item_02.png'},
-  100   : {name : '钻戒', fn: 'item_03.png'},
-  500   : {name : '跑车', fn: 'item_04.png'},
-  1000  : {name : '游艇', fn: 'item_05.png'},
-};
+export const LOCATION_MAP = [{key:"index", des:"首页"},{key:"full", des:"人满即开"}];
+
+export const DEVICE_MAP = [{key:"pc", des:"PC端"}, {key:"mobile", des:"移动端"}];

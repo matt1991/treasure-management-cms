@@ -357,3 +357,54 @@ export function processOrderSearchForm(payload) {
 
 
 }
+
+
+export function bannerToServerData(payload) {
+  let result = {};
+  if (payload.index) {
+    result.index = parseInt(payload.index);
+  }
+
+  if (payload.id) {
+    result.id = payload.id;
+  }
+
+  if (payload.location) {
+    result.location = payload.location;
+  }
+
+  if (payload.device) {
+    result.device = payload.device;
+  }
+
+  if (payload.img_url) {
+    result.img_url = payload.img_url;
+  }
+
+  return result;
+}
+
+export function bannerToLocalData(payload) {
+  let result = {};
+  if (payload.index !== undefined) {
+    result.index = payload.index + "";
+  }
+
+  if (payload.id) {
+    result.id = payload.id;
+  }
+
+  if (payload.location) {
+    result.location = payload.location;
+  }
+
+  if (payload.device) {
+    result.device = payload.device;
+  }
+
+  if (payload.img_url) {
+    result.img_url = payload.img_url;
+  }
+
+  return result;
+}
