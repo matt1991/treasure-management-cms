@@ -4,7 +4,7 @@ import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicke
 const Option = Select.Option;
 import moment from 'moment';
 import { timelyLotterySettingToServerData, timelyLotterySettingToLocalData } from '#/utils/dataProcessor';
-import {FILE_UPLOAD_URL_V2} from '#/extConstants';
+import {FILE_UPLOAD_URL_V2, UPLOAD_TOKEN, RULE_MAP} from '#/extConstants';
 
 
 
@@ -16,6 +16,16 @@ export default class CreateTimelySettingModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      fileList : [
+      //   {
+      //   uid: -1,
+      //   name: 'xxx.png',
+      //   status: 'done',
+      //   url:   "http://172.20.2.169:9998/img/317e1c547ca99d74afb523bba49f272f/icon/dcec7dabdf586e88436cac0df3658c58b2a6a5a51499138608.png",
+      //   thumbUrl:  "http://172.20.2.169:9998/img/317e1c547ca99d74afb523bba49f272f/icon/dcec7dabdf586e88436cac0df3658c58b2a6a5a51499138608.png",
+      //   rel_url : "http://172.20.2.169:9998/img/317e1c547ca99d74afb523bba49f272f/icon/dcec7dabdf586e88436cac0df3658c58b2a6a5a51499138608.png",
+      // }
+    ]
     }
   }
 
@@ -38,7 +48,7 @@ export default class CreateTimelySettingModal extends React.Component {
       name : "f",
       action : FILE_UPLOAD_URL_V2,
       listType : 'picture-card',
-      data :{u : this.props.user.getAccount(), t : this.props.user.getToken(), p : 'i'},
+      data :{t : UPLOAD_TOKEN, p : 'i'},
       multiple:false,
       onChange : this.handleUpload,
       onRemove : this.handleRemovePic,
@@ -52,28 +62,27 @@ export default class CreateTimelySettingModal extends React.Component {
             </Form.Item>
             <Form.Item label="开奖规则"  {...formItemLayout} >
                 {getFieldDecorator('rule',{rules:[{required:true}], initialValue:"1"})(<Select placeholder="请选择开奖规则" >
-                  <Option key="1">重庆时时彩</Option>
-                  <Option key="2">下注时间</Option>
-                  <Option key="3">重庆时时彩没有数据用下注时间</Option>
+                  {RULE_MAP.map((rule) => (<Option key={rule.key}>{rule.des}</Option>))}
                 </Select>)}
             </Form.Item>
-            <Form.Item  label="每期时长（分钟）" {...formItemLayout} >
-                {getFieldDecorator('period',{rules:[{required:true,message:'每期时间'},{validator:this.checkNumber}]})(<Input type="string" placeholder="每期时长（分钟）" />)}
+            <Form.Item  label="每期时长（秒）" {...formItemLayout} >
+                {getFieldDecorator('period',{rules:[{required:true,message:'每期时间'},{validator:this.checkNumber}]})(<Input type="string" placeholder="每期时长（秒）" />)}
             </Form.Item>
-            <Form.Item  label="每期间隔（分钟）" {...formItemLayout} >
-                {getFieldDecorator('interval',{rules:[{required:true,message:'每期间隔'},{validator:this.checkNumber}]})(<Input type="string" placeholder="每期间隔（分钟）" />)}
+            <Form.Item  label="每期间隔（秒）" {...formItemLayout} >
+                {getFieldDecorator('interval',{rules:[{required:true,message:'每期间隔'},{validator:this.checkNumber}]})(<Input type="string" placeholder="每期间隔（秒）" />)}
             </Form.Item>
             <Form.Item  label="自动开奖" {...formItemLayout} >
-                {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox />)}
+                {getFieldDecorator('auto_open',{rules:[{required:false}]})(<Checkbox />)}
             </Form.Item>
             <Form.Item  label="自动续期" {...formItemLayout} >
-                {getFieldDecorator('auto_renew',{rules:[{required:true}]})(<Checkbox />)}
+                {getFieldDecorator('auto_renew',{rules:[{required:false}]})(<Checkbox />)}
             </Form.Item>
             <Form.Item label="产品图片" {...formItemLayout}>
-                {getFieldDecorator('img_url', {rules:[{required:true, message:'请选择图片'}]})(<Upload {...uploadConfig} fileList={this.state.fileList}>
+                <Upload {...uploadConfig} fileList={this.state.fileList}>
                   <Icon type="plus" />
                   <div className="ant-upload-text">点击上传</div>
-                </Upload>)}
+                </Upload>
+                {getFieldDecorator('face_img', {rules:[{required:true, message:'请选择图片'}]})(<Input  style={{display:'none'}}/>)}
             </Form.Item>
             <Form.Item  label="生效时间" {...formItemLayout} >
                 {getFieldDecorator('effect_time',{rules:[{required:true}]})(<DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />)}
@@ -164,10 +173,7 @@ export default class CreateTimelySettingModal extends React.Component {
   }
 
   handleUpload = info => {
-    // retain the last uploaded one
-    // replace url
-    // filter those which don't have correct response
-    //console.log(info,'###########');
+    console.log("handleUpload");
     const currFile = info.file;
     if (currFile.response && currFile.response.status <= 0){
       this.props.dispatch({type:'notify/error', payload : getMsgByStatus(currFile.response.status)});
@@ -184,13 +190,14 @@ export default class CreateTimelySettingModal extends React.Component {
     .filter(file => file.response ? file.response.status >= 1 : true);
     //.filter(file => file.response ? file.response.key : true);
     this.setState({fileList : fileList});
-    this.props.form.setFieldsValue({img_url : fileList[0].rel_icon});
+    console.log(fileList[0]);
+    this.props.form.setFieldsValue({face_img : fileList[0].url});
   }
 
 
   handleRemovePic = info => {
     console.debug('handleRemovePic')
-    this.props.form.setFieldsValue({img_url : ''});
+    this.props.form.setFieldsValue({face_img : ''});
     this.state.fileList.splice(0, this.state.fileList.length);
     return true;
   }
@@ -204,14 +211,10 @@ export default class CreateTimelySettingModal extends React.Component {
     form.validateFieldsAndScroll((errors, values) => {
       if (!!errors) return;
       const formValue = form.getFieldsValue();
-      // console.log(formValue);
-      // console.log(formValue.effect_time.valueOf());
-      // console.log(formValue.effect_time.format('HH:mm:ss'));
-      // let serverdata = timelyLotterySettingToServerData(formValue);
-      // console.log(serverdata);
-      // console.log(timelyLotterySettingToLocalData(serverdata));
+       console.log(formValue);
+
       this.props.dispatch({
-        type:`timelyLottery/settings/add`,
+        type:`timelyLottery/setting/add`,
         payload:timelyLotterySettingToServerData(formValue)
       })
 

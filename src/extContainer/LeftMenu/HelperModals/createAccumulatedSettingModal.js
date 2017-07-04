@@ -4,6 +4,8 @@ import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicke
 const Option = Select.Option;
 import moment from 'moment';
 import { accumulatedLotterySettingToServerData, accumulatedLotterySettingToLocalData } from '#/utils/dataProcessor';
+import {FILE_UPLOAD_URL_V2, UPLOAD_TOKEN, RULE_MAP} from '#/extConstants';
+
 
 
 @Form.create()
@@ -39,17 +41,12 @@ export default class CreateAccumulatedSettingModal extends React.Component {
                 {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}]})(<Input placeholder="请输入名字" />)}
             </Form.Item>
             <Form.Item label="开奖规则"  {...formItemLayout} >
-                {getFieldDecorator('rule',{rules:[{required:true}], initialValue:"1"})(<Select placeholder="请选择开奖规则" >
-                  <Option key="1">重庆时时彩</Option>
-                  <Option key="2">下注时间</Option>
-                  <Option key="3">重庆时时彩没有数据用下注时间</Option>
-                </Select>)}
+              {getFieldDecorator('rule',{rules:[{required:true}], initialValue:"2"})(<Select placeholder="请选择开奖规则" >
+                {RULE_MAP.map((rule) => (<Option key={rule.key}>{rule.des}</Option>))}
+              </Select>)}
             </Form.Item>
             <Form.Item  label="奖池累计天数" {...formItemLayout} >
                 {getFieldDecorator('period',{rules:[{required:true,message:'请再次输入密码'},{validator:this.checkNumber}]})(<Input type="string" placeholder="累计天数" />)}
-            </Form.Item>
-            <Form.Item  label="截止时间" {...formItemLayout} >
-                {getFieldDecorator('end_time',{rules:[{required:true,message:'请输入电话'}]})(<TimePicker defaultValue={moment('12:08:23', 'HH:mm:ss')} size="large" />)}
             </Form.Item>
             <Form.Item  label="自动开奖" {...formItemLayout} >
                 {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox />)}
@@ -59,6 +56,9 @@ export default class CreateAccumulatedSettingModal extends React.Component {
             </Form.Item>
             <Form.Item  label="生效时间" {...formItemLayout} >
                 {getFieldDecorator('effect_time',{rules:[{required:true}]})(<DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />)}
+            </Form.Item>
+            <Form.Item  label="截止时间" {...formItemLayout} >
+                {getFieldDecorator('end_time',{rules:[{required:true}]})(<DatePicker disabled format="YYYY-MM-DD HH:mm:ss" showTime />)}
             </Form.Item>
             <Form.Item  label="份额单价" {...formItemLayout} >
                 {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}]})(<Input type="string" placeholder="份额单价" />)}

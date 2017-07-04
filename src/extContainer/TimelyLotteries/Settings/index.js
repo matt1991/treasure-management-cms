@@ -102,7 +102,7 @@ export default class Settings extends React.Component{
       title:'操作',
       dataIndex:'status',
       render:(text, record) => {
-          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.editSetting(record)}>编辑</a></span>)
+          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
         }
     }
   ];
@@ -154,6 +154,17 @@ export default class Settings extends React.Component{
     e.preventDefault();
     this.searchManageList(this.props.form.getFieldsValue());
     //console.log('收到表单值：', this.props.form.getFieldsValue());
+  }
+
+  handleEdit = record => {
+    return e =>{
+      e.preventDefault();
+      console.log("overcoat/editTimelySetting_modal/show", record);
+      this.props.dispatch({
+        type:"overcoat/editTimelySetting_modal/show",
+        payload:{editTimelySetting:record}
+      })
+    }
   }
 
   createSetting = e => {
@@ -228,18 +239,18 @@ export default class Settings extends React.Component{
 
 
 
-  handleEdit = record => {
-    return e => {
-      e.preventDefault();
-      this.props.dispatch({
-        type:`overcoat/editTimelySetting_modal/show`,
-        payload:{
-          editTimelySetting:record
-        }
-      })
-    //  this.props.dispatch(push(`/sadmin/manage/info/${record.id}`))
-    }
-  }
+  // handleEdit = record => {
+  //   return e => {
+  //     e.preventDefault();
+  //     this.props.dispatch({
+  //       type:`overcoat/editTimelySetting_modal/show`,
+  //       payload:{
+  //         editTimelySetting:record
+  //       }
+  //     })
+  //   //  this.props.dispatch(push(`/sadmin/manage/info/${record.id}`))
+  //   }
+  // }
 
 
 

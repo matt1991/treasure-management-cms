@@ -11,19 +11,20 @@ export const ROLE_ADMIN = 'admin';
 export const ROLE_GUEST_ADMIN = 'guest_admin';
 export const ROLE_SADMIN = 'sadmin';
 
-export const API_DOMAIN = '172.20.2.169';//'172.20.2.169'; yy.vpcdn.com zbadmin.vpcdn.com
+export const API_DOMAIN = '172.20.2.159';//'172.20.2.169'; yy.vpcdn.com zbadmin.vpcdn.com
 
 export const UPLOAD_API = '172.20.2.169';
 
+export const UPLOAD_TOKEN = 'Lag58d9fd3cce8b410565';
 
-//export const API_ROOT_URL = `http://${API_DOMAIN}:9099`;//'http://172.20.2.181:9099';//'http://172.20.2.181:9099';//
+export const API_ROOT_URL = `http://${API_DOMAIN}:9910/backend/`;//'http://172.20.2.181:9099';//'http://172.20.2.181:9099';//
 
 //export const API_ROOT_URL = `http://www.6up.com:8080/bg`;//http://172.20.6.118:8084/bg/rank/list/?XDEBUG_SESSION_START=ECLIPSE_DBGP&KEY=14906022527571
-export const API_ROOT_URL = `http://easy-mock.com/mock/592a62cd91470c0ac1fe9894/treasure`;
+//export const API_ROOT_URL = `http://easy-mock.com/mock/592a62cd91470c0ac1fe9894/treasure`;
 
 export const FILE_SERVER_URL = `http://${UPLOAD_API}:9099`;//'http://172.20.2.181:9099';//'http://172.20.2.169:9099';//
 export const FILE_UPLOAD_URL = `http://${UPLOAD_API}:9099/admin/upload/`;//'http://172.20.2.181:9099/admin/upload/';
-export const FILE_UPLOAD_URL_V2 = `http://${UPLOAD_API}:9998/live/upload/`;//'http://172.20.2.181:9998/live/upload/';
+export const FILE_UPLOAD_URL_V2 = `http://${UPLOAD_API}:9998/treasure/upload/`;//'http://172.20.2.181:9998/live/upload/';
 export const FILE_UPLOAD_SU_URL = `http://${UPLOAD_API}:9099/su/upload/`;//'http://172.20.2.181:9099/su/upload/';
 export const FILE_PIC_SERVER_URL = `http://${UPLOAD_API}:9998/`;
 
@@ -60,3 +61,5 @@ export const CHAT_FORBID_TYPE = {
 export const LOCATION_MAP = [{key:"index", des:"首页"},{key:"full", des:"人满即开"}];
 
 export const DEVICE_MAP = [{key:"pc", des:"PC端"}, {key:"mobile", des:"移动端"}];
+
+export const RULE_MAP = [{key:"1", des:"下注时间"}, {key:"2", des:"重庆时时彩结合下注时间"}];

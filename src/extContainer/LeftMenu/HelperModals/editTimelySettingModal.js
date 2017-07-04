@@ -1,38 +1,41 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicker,DatePicker, Upload} from 'antd';
+import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicker,DatePicker,Upload} from 'antd';
 const Option = Select.Option;
 import moment from 'moment';
 import { timelyLotterySettingToServerData, timelyLotterySettingToLocalData } from '#/utils/dataProcessor';
-
-import {FILE_UPLOAD_URL_V2} from '#/extConstants';
-
+import {FILE_UPLOAD_URL_V2, UPLOAD_TOKEN, RULE_MAP} from '#/extConstants';
 
 
 
 @Form.create()
 @connect(state => ({
   account: state.account,
-  overcoat: state.overcoat
 }))
 export default class EditTimelySettingModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fileList : [{
+      fileList : [
+        {
         uid: -1,
         name: 'xxx.png',
         status: 'done',
-        url:   props.overcoat.editTimelySetting.img_url,
-        thumbUrl:  props.overcoat.editTimelySetting.img_url,
-        rel_url : props.overcoat.editTimelySetting.img_url,
-      }]
+        url:   this.props.overcoat.editTimelySetting.face_img,
+        thumbUrl: this.props.overcoat.editTimelySetting.face_img,
+        rel_url : this.props.overcoat.editTimelySetting.face_img,
+      }
+    ]
     }
   }
 
   render() {
     const { overcoat, form } = this.props;
     const {editTimelySetting} = overcoat;
+    const oriEditTimelySetting = timelyLotterySettingToLocalData(editTimelySetting);
+
+    
+
     const modalConfig = this.getModalConfig();
     const formItemLayout = {
       labelCol: {
@@ -45,11 +48,12 @@ export default class EditTimelySettingModal extends React.Component {
       },
     };
     const {getFieldDecorator} = form;
+
     const uploadConfig = {
       name : "f",
       action : FILE_UPLOAD_URL_V2,
       listType : 'picture-card',
-      data :{u : this.props.user.getAccount(), t : this.props.user.getToken(), p : 'i'},
+      data :{t : UPLOAD_TOKEN, p : 'i'},
       multiple:false,
       onChange : this.handleUpload,
       onRemove : this.handleRemovePic,
@@ -58,42 +62,41 @@ export default class EditTimelySettingModal extends React.Component {
     return (
       <Modal visible={overcoat.editTimelySettingModal} {...modalConfig}>
          <Form layout="horizontal">
-           <Form.Item label="ID"  {...formItemLayout} >
-               {getFieldDecorator('id',{rules:[{required:true}], initialValue:editTimelySetting.id})(<Input disabled />)}
-           </Form.Item>
+             <Form.Item label="ID"  {...formItemLayout} >
+                 {getFieldDecorator('id',{rules:[{required:true}], initialValue:oriEditTimelySetting.id})(<Input disabled />)}
+             </Form.Item>
             <Form.Item label="名字"  {...formItemLayout} >
-                {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}], initialValue:editTimelySetting.name})(<Input placeholder="请输入名字" />)}
+                {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}],initialValue:oriEditTimelySetting.name})(<Input placeholder="请输入名字" />)}
             </Form.Item>
             <Form.Item label="开奖规则"  {...formItemLayout} >
-                {getFieldDecorator('rule',{rules:[{required:true}], initialValue:editTimelySetting.rule})(<Select placeholder="请选择开奖规则" >
-                  <Option key="1">重庆时时彩</Option>
-                  <Option key="2">下注时间</Option>
-                  <Option key="3">重庆时时彩没有数据用下注时间</Option>
+                {getFieldDecorator('rule',{rules:[{required:true}], initialValue:oriEditTimelySetting.rule})(<Select disabled placeholder="请选择开奖规则" >
+                  {RULE_MAP.map((rule) => (<Option key={rule.key}>{rule.des}</Option>))}
                 </Select>)}
             </Form.Item>
-            <Form.Item  label="奖池累计天数" {...formItemLayout} >
-                {getFieldDecorator('period',{rules:[{required:true,message:'请再次输入密码'},{validator:this.checkNumber}], initialValue:editTimelySetting.period})(<Input type="string" placeholder="累计天数" />)}
+            <Form.Item  label="每期时长（秒）" {...formItemLayout} >
+                {getFieldDecorator('period',{rules:[{required:true,message:'每期时间'},{validator:this.checkNumber}], initialValue:oriEditTimelySetting.period})(<Input type="string" placeholder="每期时长（秒）" />)}
             </Form.Item>
-            <Form.Item  label="截止时间" {...formItemLayout} >
-                {getFieldDecorator('end_time',{rules:[{required:true,message:'请输入电话'}]})(<TimePicker defaultValue={moment(editTimelySetting.end_time, 'HH:mm:ss')} size="large" />)}
+            <Form.Item  label="每期间隔（秒）" {...formItemLayout} >
+                {getFieldDecorator('interval',{rules:[{required:true,message:'每期间隔'},{validator:this.checkNumber}], initialValue:oriEditTimelySetting.interval})(<Input type="string" placeholder="每期间隔（秒）" />)}
             </Form.Item>
             <Form.Item  label="自动开奖" {...formItemLayout} >
-                {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox defaultChecked={editTimelySetting.auto_open} />)}
+                {getFieldDecorator('auto_open',{rules:[{required:false}], initialValue:oriEditTimelySetting.auto_open})(<Checkbox defaultChecked={oriEditTimelySetting.auto_open} />)}
             </Form.Item>
             <Form.Item  label="自动续期" {...formItemLayout} >
-                {getFieldDecorator('auto_renew',{rules:[{required:true}]})(<Checkbox defaultChecked={editTimelySetting.auto_renew} />)}
+                {getFieldDecorator('auto_renew',{rules:[{required:false}], initialValue:oriEditTimelySetting.auto_renew})(<Checkbox defaultChecked={oriEditTimelySetting.auto_renew} />)}
             </Form.Item>
             <Form.Item label="产品图片" {...formItemLayout}>
-                {getFieldDecorator('img_url', {rules:[{required:true, message:'请选择图片'}]})(<Upload {...uploadConfig} fileList={this.state.fileList}>
+                <Upload {...uploadConfig} fileList={this.state.fileList}>
                   <Icon type="plus" />
                   <div className="ant-upload-text">点击上传</div>
-                </Upload>)}
+                </Upload>
+                {getFieldDecorator('face_img', {rules:[{required:true, message:'请选择图片'}], initialValue:oriEditTimelySetting.face_img})(<Input  style={{display:'none'}}/>)}
             </Form.Item>
             <Form.Item  label="份额单价" {...formItemLayout} >
-                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}], initialValue:editTimelySetting.unit_price})(<Input type="string" placeholder="份额单价" />)}
+                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}], initialValue:oriEditTimelySetting.unit_price})(<Input type="string" placeholder="份额单价" />)}
             </Form.Item>
             <Form.Item  label="游戏杀数" {...formItemLayout} >
-                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}], initialValue:editTimelySetting.lucky_rate})(<Input type="string" placeholder="游戏杀数" />)}
+                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}], initialValue:oriEditTimelySetting.lucky_rate})(<Input type="string" placeholder="游戏杀数" />)}
             </Form.Item>
         </Form>
       </Modal>
@@ -125,12 +128,28 @@ export default class EditTimelySettingModal extends React.Component {
     return {
       footer,
       width: 600,
-      title: "新建配置",
+      title: "修改配置",
       onCancel: this.close,
       maskClosable: false,
     };
   }
 
+
+
+
+  checkConfirmPwd = (rule, value, callback) => {
+    const {form} = this.props;
+    if (value) {
+      const password = form.getFieldValue('new_password');
+      if (value && value !== password) {
+        callback(new Error('输入的密码不一致'));
+      } else {
+        callback();
+      }
+    } else {
+      callback();
+    }
+  }
 
   checkNumber = (rule, value, callback) => {
     const {form} = this.props;
@@ -159,10 +178,7 @@ export default class EditTimelySettingModal extends React.Component {
   }
 
   handleUpload = info => {
-    // retain the last uploaded one
-    // replace url
-    // filter those which don't have correct response
-    //console.log(info,'###########');
+    console.log("handleUpload");
     const currFile = info.file;
     if (currFile.response && currFile.response.status <= 0){
       this.props.dispatch({type:'notify/error', payload : getMsgByStatus(currFile.response.status)});
@@ -179,13 +195,14 @@ export default class EditTimelySettingModal extends React.Component {
     .filter(file => file.response ? file.response.status >= 1 : true);
     //.filter(file => file.response ? file.response.key : true);
     this.setState({fileList : fileList});
-    this.props.form.setFieldsValue({img_url : fileList[0].rel_icon});
+    console.log(fileList[0]);
+    this.props.form.setFieldsValue({face_img : fileList[0].url});
   }
 
 
   handleRemovePic = info => {
     console.debug('handleRemovePic')
-    this.props.form.setFieldsValue({img_url : ''});
+    this.props.form.setFieldsValue({face_img : ''});
     this.state.fileList.splice(0, this.state.fileList.length);
     return true;
   }
@@ -199,13 +216,15 @@ export default class EditTimelySettingModal extends React.Component {
     form.validateFieldsAndScroll((errors, values) => {
       if (!!errors) return;
       const formValue = form.getFieldsValue();
+       console.log(formValue);
+
       this.props.dispatch({
-        type:`timelyLottery/settings/update`,
+        type:`timelyLottery/setting/update`,
         payload:timelyLotterySettingToServerData(formValue)
       })
+
       this.props.dispatch({
-        type: 'overcoat/editTimelySetting_modal/close',
-        payload:{editTimelySetting:{}}
+        type: 'overcoat/editTimelySetting_modal/close'
       });
     });
   }
@@ -215,8 +234,7 @@ export default class EditTimelySettingModal extends React.Component {
     const { overcoat, form } = this.props;
 
     this.props.dispatch({
-      type: 'overcoat/editTimelySetting_modal/close',
-      payload:{editTimelySetting:{}}
+      type: 'overcoat/editTimelySetting_modal/close'
     });
   }
 }

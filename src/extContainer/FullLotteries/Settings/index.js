@@ -4,6 +4,8 @@ import {push, replace} from 'redux-router';
 import {Table, Button, Form, Input, Modal, DatePicker, Pagination,Spin, Select, Row} from 'antd';
 
 import {API_ROOT_URL} from '#/extConstants';
+
+import {format} from '#/utils';
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const RangePicker = DatePicker.RangePicker;
@@ -24,7 +26,6 @@ export default class Settings extends React.Component{
       pageSize:10,
       curPage:1,
     }
-
   }
 
   componentDidMount() {
@@ -57,23 +58,21 @@ export default class Settings extends React.Component{
       dataIndex:'name',
     },
     {
-      title:'创建时间',
-      dataIndex:'create_time',
-      render:(text, record) => (<span>{text?text:""}</span>)
+      title:'总份额',
+      dataIndex:'total_amount',
     },
     {
-      title:'间隔',
-      dataIndex:'interval',
-      render:(text, record) => (<span>{text?text:""}</span>)
+      title:'每注金额',
+      dataIndex:'unit_price',
+    },
+    {
+      title:'创建时间',
+      dataIndex:'create_time',
+      render:(text, record) => (<span>{(new Date(text)).toLocaleString("zh-CN",{hour12:false})}</span>)
     },
     {
       title:'开奖规则',
       dataIndex:'rule',
-      render:(text, record) => (<span>{text?text:""}</span>)
-    },
-    {
-      title:'截止时间',
-      dataIndex:'end_time',
       render:(text, record) => (<span>{text?text:""}</span>)
     },
     {
@@ -102,7 +101,7 @@ export default class Settings extends React.Component{
       title:'操作',
       dataIndex:'status',
       render:(text, record) => {
-          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.editSetting(record)}>编辑</a></span>)
+          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
         }
     }
   ];

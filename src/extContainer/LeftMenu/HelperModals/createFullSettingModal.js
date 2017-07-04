@@ -4,7 +4,7 @@ import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicke
 const Option = Select.Option;
 import moment from 'moment';
 import { fullLotterySettingToServerData, fullLotterySettingToLocalData } from '#/utils/dataProcessor';
-import {FILE_UPLOAD_URL_V2} from '#/extConstants';
+import {FILE_UPLOAD_URL_V2, UPLOAD_TOKEN, RULE_MAP} from '#/extConstants';
 
 
 @Form.create()
@@ -38,7 +38,7 @@ export default class CreateFullSettingModal extends React.Component {
       name : "f",
       action : FILE_UPLOAD_URL_V2,
       listType : 'picture-card',
-      data :{u : this.props.user.getAccount(), t : this.props.user.getToken(), p : 'i'},
+      data :{t : UPLOAD_TOKEN, p : 'i'},
       multiple:false,
       onChange : this.handleUpload,
       onRemove : this.handleRemovePic,
@@ -51,35 +51,34 @@ export default class CreateFullSettingModal extends React.Component {
                 {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}]})(<Input placeholder="请输入名字" />)}
             </Form.Item>
             <Form.Item label="开奖规则"  {...formItemLayout} >
-                {getFieldDecorator('rule',{rules:[{required:true}], initialValue:"1"})(<Select placeholder="请选择开奖规则" >
-                  <Option key="1">重庆时时彩</Option>
-                  <Option key="2">下注时间</Option>
-                  <Option key="3">重庆时时彩没有数据用下注时间</Option>
-                </Select>)}
+              {getFieldDecorator('rule',{rules:[{required:true}], initialValue:"1"})(<Select placeholder="请选择开奖规则" >
+                {RULE_MAP.map((rule) => (<Option key={rule.key}>{rule.des}</Option>))}
+              </Select>)}
             </Form.Item>
             <Form.Item  label="奖金总额" {...formItemLayout} >
-                {getFieldDecorator('lucky_pool',{rules:[{required:true,message:'请输入奖金总额'},{validator:this.checkNumber}]})(<Input type="string" placeholder="奖金总额" />)}
+                {getFieldDecorator('lucky_pool',{rules:[{required:true,message:'请输入奖金总额'},{validator:this.checkNumber}]})(<Input type="string" onChange={this.onLuckyPoolChange} placeholder="奖金总额" />)}
             </Form.Item>
             <Form.Item  label="份额单价" {...formItemLayout} >
-                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}]})(<Input type="string" placeholder="份额单价" />)}
+                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}]})(<Input type="string" onChange={this.onUnitPriceChange} placeholder="份额单价" />)}
             </Form.Item>
             <Form.Item  label="游戏杀数" {...formItemLayout} >
-                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}]})(<Input type="string" placeholder="游戏杀数" />)}
+                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}]})(<Input type="string" onChange={this.onLuckyRateChange} placeholder="游戏杀数" />)}
             </Form.Item>
             <Form.Item  label="所需份额" {...formItemLayout} >
                 {getFieldDecorator('total_amount',{rules:[{required:true,message:'请输入总份额'},{validator:this.checkNumber}]})(<Input disabled type="string" placeholder="总份额" />)}
             </Form.Item>
             <Form.Item label="产品图片" {...formItemLayout}>
-                {getFieldDecorator('img_url', {rules:[{required:true, message:'请选择图片'}]})(<Upload {...uploadConfig} fileList={this.state.fileList}>
+                <Upload {...uploadConfig} fileList={this.state.fileList}>
                   <Icon type="plus" />
                   <div className="ant-upload-text">点击上传</div>
-                </Upload>)}
+                </Upload>
+                {getFieldDecorator('face_img', {rules:[{required:true, message:'请选择图片'}]})(<Input  style={{display:'none'}}/>)}
             </Form.Item>
             <Form.Item  label="自动开奖" {...formItemLayout} >
-                {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox />)}
+                {getFieldDecorator('auto_open',{rules:[{required:false}]})(<Checkbox />)}
             </Form.Item>
             <Form.Item  label="自动续期" {...formItemLayout} >
-                {getFieldDecorator('auto_renew',{rules:[{required:true}]})(<Checkbox />)}
+                {getFieldDecorator('auto_renew',{rules:[{required:false}]})(<Checkbox />)}
             </Form.Item>
             <Form.Item  label="生效时间" {...formItemLayout} >
                 {getFieldDecorator('effect_time',{rules:[{required:true}]})(<DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />)}
@@ -88,6 +87,40 @@ export default class CreateFullSettingModal extends React.Component {
       </Modal>
     );
   }
+
+  onUnitPriceChange =  (e) => {
+    e.preventDefault();
+    const lucky_pool = this.props.form.getFieldsValue().lucky_pool;
+    const lucky_rate = this.props.form.getFieldsValue().lucky_rate;
+
+    if (parseInt(lucky_pool) && parseFloat(lucky_rate)) {
+        this.props.form.setFieldsValue({'total_amount': parseInt(lucky_pool) * parseFloat(lucky_rate)/parseInt(e.target.value) + ""});
+    }
+
+  }
+
+  onLuckyPoolChange =  (e) => {
+    e.preventDefault();
+    const unit_price = this.props.form.getFieldsValue().unit_price;
+    const lucky_rate = this.props.form.getFieldsValue().lucky_rate;
+
+    if (parseInt(unit_price) && parseFloat(lucky_rate)) {
+        this.props.form.setFieldsValue({'total_amount':parseInt(e.target.value) * parseFloat(lucky_rate)/parseInt(unit_price) + ""});
+    }
+  }
+
+  onLuckyRateChange = (e) => {
+    e.preventDefault();
+    const unit_price = this.props.form.getFieldsValue().unit_price;
+    const lucky_pool = this.props.form.getFieldsValue().lucky_pool;
+
+    if (parseInt(unit_price) && parseInt(lucky_pool)) {
+        this.props.form.setFieldsValue({'total_amount':parseInt(lucky_pool) * parseFloat(e.target.value)/parseInt(unit_price) + ""});
+    }
+  }
+
+
+
 
   getModalConfig = () => {
     const quitBtnConfig = {
@@ -186,13 +219,13 @@ export default class CreateFullSettingModal extends React.Component {
     .filter(file => file.response ? file.response.status >= 1 : true);
     //.filter(file => file.response ? file.response.key : true);
     this.setState({fileList : fileList});
-    this.props.form.setFieldsValue({img_url : fileList[0].rel_icon});
+    this.props.form.setFieldsValue({face_img : fileList[0].url});
   }
 
 
   handleRemovePic = info => {
     console.debug('handleRemovePic')
-    this.props.form.setFieldsValue({img_url : ''});
+    this.props.form.setFieldsValue({face_img : ''});
     this.state.fileList.splice(0, this.state.fileList.length);
     return true;
   }

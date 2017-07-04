@@ -7,7 +7,7 @@ export default {
   namespace : 'timelyLottery',
   state     : {
     list:[],
-    settingList:[],
+    settingList:[{"id":"1058","name":"时时彩","period":300,"rule":"1","number":0,"face_img":"http://172.20.2.169:9998/img/317e1c547ca99d74afb523bba49f272f/icon/c380f5e6c5e370ca66a1f8ab512be701f4c31cd01499152726.png","modify_time":1499167517000,"create_time":1499167517000,"auto_open":1,"auto_renew":1,"number":0,"unit_price":1,"interval":50,"total_amount":0,"lucky_rate":0.95}],
     total:0,
     updated:true,
   },
@@ -63,7 +63,7 @@ export default {
         console.log(err);
         yield put({
           type: 'timelyLottery/list/succeeded',
-          payload: {list : [], total:0, updated:true},
+          payload: {updated:true},
         });
         // yield put({
         //   type: 'notify/error',
@@ -72,14 +72,14 @@ export default {
       }
     },
 
-    *['timelyLottery/settings/list']({payload}){
+    *['timelyLottery/setting/list']({payload}){
       try{
-        console.log('TODO: timelyLottery/settings/list is sent to server');
+        console.log('TODO: timelyLottery/setting/list is sent to server');
         const endpoint = yield call(timelyLotteries);
         const res = yield call(
           endpoint['post'],
           {
-            id : 'settings/list',
+            id : 'setting/list',
             body: {
               uid  : yield select(state => state.user.getAccount()),
               token  : yield select(state => state.user.getToken()),
@@ -87,11 +87,11 @@ export default {
           }
         );
         yield put({
-          type:'timelyLottery/settings/list/succeeded',
+          type:'timelyLottery/setting/list/succeeded',
           payload:{settingList:res}
         });
       }catch(err){
-        console.warn('timelyLottery/settings/list/succeeded', 'failed to call.');
+        console.warn('timelyLottery/setting/list/succeeded', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',
@@ -101,9 +101,9 @@ export default {
     },
 
     //back 201
-    *['timelyLottery/settings/add']({payload}){
+    *['timelyLottery/setting/add']({payload}){
       try{
-        console.log('TODO: timelyLottery/settings/add is sent to server');
+        console.log('TODO: timelyLottery/setting/add is sent to server');
         const endpoint = yield call(timelyLotteries);
         const res = yield call(
           endpoint['post'],
@@ -118,11 +118,11 @@ export default {
         );
 
         yield put({
-          type:'timelyLottery/settings/add/succeeded',
+          type:'timelyLottery/setting/add/succeeded',
           payload:res
         });
       }catch(err){
-        console.warn('timelyLottery/settings/add', 'failed to call.');
+        console.warn('timelyLottery/setting/add', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',
@@ -132,7 +132,7 @@ export default {
     },
 
     //back 202
-    *['timelyLottery/settings/update']({payload}){
+    *['timelyLottery/setting/update']({payload}){
       try{
         console.log('TODO: timelyLottery/settings/update is sent to server');
         const endpoint = yield call(timelyLotteries);
@@ -149,11 +149,11 @@ export default {
         );
 
         yield put({
-          type:'timelyLottery/settings/update/succeeded',
+          type:'timelyLottery/setting/update/succeeded',
           payload:res
         });
       }catch(err){
-        console.warn('timelyLottery/settings/update', 'failed to call.');
+        console.warn('timelyLottery/setting/update', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',

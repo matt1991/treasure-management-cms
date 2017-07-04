@@ -7,7 +7,7 @@ export default {
   namespace : 'fullLottery',
   state     : {
     list:[],
-    settingList:[],
+    settingList:[{"id":"1","token":"test_token","name":"人满即开1","rule":"1","unit_price":1,"lucky_rate":0.95,"auto_open":1,"auto_renew":1,"effect_time":1499262295690,"create_time":1499262295690,"total_amount":95000,"face_img":"http://172.20.2.169:9998/img/317e1c547ca99d74afb523bba49f272f/icon/869b15f39b6a9c8a34c9094e412aa18529e7806d1499175894.png"}],
     total:0,
     updated:true,
   },

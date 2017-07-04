@@ -102,7 +102,7 @@ export default class Settings extends React.Component{
       title:'操作',
       dataIndex:'status',
       render:(text, record) => {
-          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.editSetting(record)}>编辑</a></span>)
+          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
         }
     }
   ];
