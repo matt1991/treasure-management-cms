@@ -48,7 +48,7 @@ export const accumulatedLotteries = () => Endpoint({path: '/accumulatedLotteries
 export const timelyLotteries = () => Endpoint({path: '/timelyLotteries'});
 export const fullLotteries = () => Endpoint({path: '/fullLotteries'});
 
-export const order = () => Endpoint({path: '/order'});
+export const order = () => Endpoint({path: '/orders'});
 
 export const banner = () => Endpoint({path:'/banners'});
 

@@ -23,7 +23,7 @@ export function accumulatedLotterySettingToServerData(payload) {
   }
 
   if (payload.lucky_rate) {
-    result.unit_price = parseFloat(payload.lucky_rate);
+    result.lucky_rate = parseFloat(payload.lucky_rate);
   }
 
   if (payload.auto_open !== undefined) {
@@ -39,8 +39,9 @@ export function accumulatedLotterySettingToServerData(payload) {
   }
 
   if (payload.end_time) {
-    result.end_time = payload.end_time.format('HH:mm:ss');
+    result.end_time = payload.effect_time.valueOf();
   }
+  console.log(payload, result);
 
   return result;
 };
@@ -58,6 +59,7 @@ export function accumulatedLotterySettingToLocalData(payload) {
 
   if (payload.period) {
     result.period = payload.period + "";
+    result.days = payload.period / 24/60/60/1000 + "";
   }
 
   if (payload.rule) {
@@ -69,7 +71,7 @@ export function accumulatedLotterySettingToLocalData(payload) {
   }
 
   if (payload.lucky_rate) {
-    result.unit_price = payload.lucky_rate+"";
+    result.lucky_rate = payload.lucky_rate+"";
   }
 
   if (payload.auto_open !== undefined) {
@@ -95,7 +97,7 @@ export function accumulatedLotterySettingToLocalData(payload) {
   }
 
   if (payload.end_time) {
-    result.end_time = moment(payload.end_time, 'HH:mm:ss');
+    result.end_time = moment(payload.effect_time);
   }
 
   return result;
@@ -395,12 +397,17 @@ export function processOrderSearchForm(payload) {
     result.type = parseInt(payload.type);
   }
 
-  if (payload.login_name) {
-    result.login_name = payload.login_name;
+  if (payload.uid) {
+    result.uid = payload.uid;
   }
 
   if (payload.state) {
     result.state = payload.state;
+  }
+
+  if (payload.start_time) {
+    result.from = payload.start_time[0].valueOf();
+    result.to = payload.start_time[1].valueOf();
   }
 
   if (payload.lucky_time) {

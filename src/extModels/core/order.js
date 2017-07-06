@@ -22,7 +22,7 @@ export default {
     //api id : 203
     *['order/list']({payload}){
       try{
-        console.log('TODO: order/list is sent to server');
+        console.log('TODO: order/list is sent to server', payload);
         const endpoint = yield call(order);
         const res = yield call(
           endpoint['get'],

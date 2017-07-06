@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {push, replace} from 'redux-router';
 import {Table, Button, Form, Input, Modal, DatePicker, Pagination,Spin, Select, Row} from 'antd';
 
-import {API_ROOT_URL} from '#/extConstants';
+import {API_ROOT_URL, RULE_MAP} from '#/extConstants';
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const RangePicker = DatePicker.RangePicker;
@@ -57,24 +57,22 @@ export default class Settings extends React.Component{
       dataIndex:'name',
     },
     {
-      title:'创建时间',
-      dataIndex:'create_time',
-      render:(text, record) => (<span>{text?text:""}</span>)
-    },
-    {
-      title:'间隔',
-      dataIndex:'interval',
-      render:(text, record) => (<span>{text?text:""}</span>)
+      title:'累计天数',
+      dataIndex:'period',
+      render:(text, record) => (<span>{parseInt(text) / (24* 60 * 60 * 1000)}</span>)
     },
     {
       title:'开奖规则',
       dataIndex:'rule',
-      render:(text, record) => (<span>{text?text:""}</span>)
-    },
-    {
-      title:'截止时间',
-      dataIndex:'end_time',
-      render:(text, record) => (<span>{text?text:""}</span>)
+      render:(text, record) => {
+        let result = "";
+        RULE_MAP.map((rule) => {
+          if (text === rule.key) {
+            result = rule.des
+          }
+        });
+        return (<span>{result}</span>)
+      }
     },
     {
       title:'期数',
@@ -90,19 +88,20 @@ export default class Settings extends React.Component{
     },
 
     {
-      title:'状态',
-      dataIndex:'state',
-      render:(text, record) => (
-        <span>
-          {text?text:0}
-        </span>
-      )
+      title:'创建时间',
+      dataIndex:'create_time',
+      render:(text, record) => (<span>{(new Date(text)).toLocaleString("zh-CN",{hour12:false})}</span>)
+    },
+    {
+      title:'修改时间',
+      dataIndex:'modify_time',
+      render:(text, record) => (<span>{(new Date(text)).toLocaleString("zh-CN",{hour12:false})}</span>)
     },
     {
       title:'操作',
       dataIndex:'status',
       render:(text, record) => {
-          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
+          return (<span><a href="#" onClick={this.open(record)}>开奖</a> | <a href="#" onClick={this.renew(record)}>续期</a> | <a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
         }
     }
   ];
@@ -144,10 +143,10 @@ export default class Settings extends React.Component{
 
   loadData = (payload) => {
     // this.setState({loading:true});
-    // this.props.dispatch({
-    //   type:'accumulatedLottery/list',
-    //   payload:payload || {},
-    // });
+    this.props.dispatch({
+      type:'accumulatedLottery/setting/list',
+      payload:payload || {},
+    });
   }
 
   handleSearch = e => {
@@ -187,7 +186,6 @@ export default class Settings extends React.Component{
 
   searchManageList = (values) => {
     let result = this.processSearchValues(values);
-    console.log(result);
     if (!result) {
       return;
     }

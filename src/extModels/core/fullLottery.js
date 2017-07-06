@@ -16,18 +16,21 @@ export default {
     ['fullLottery/list/succeeded'] (state, {payload}) {
       return {...state, ...payload};
     },
+    ['fullLottery/setting/list/succeeded'] (state, {payload}) {
+      return {...state, ...payload};
+    },
     ['fullLottery/setting/add/succeeded'] (state, {payload}) {
       let settingList = state.settingList;
       settingList.unshift(payload);
       return {...state, ...{settingList}};
     },
     ['fullLottery/setting/update/succeeded'] (state, {payload}) {
-      let settingList = state.settingList;
-      settingList.map((setting) =>{
+      let settingList = [];
+      state.settingList.map((setting) =>{
         if (setting.id == payload.id) {
-          return payload;
+          settingList.push(payload);
         } else {
-          return setting;
+          settingList.push(setting);
         }
       })
       return {...state, ...{settingList}};
@@ -72,26 +75,26 @@ export default {
       }
     },
 
-    *['fullLottery/settings/list']({payload}){
+    *['fullLottery/setting/list']({payload}){
       try{
         console.log('TODO: fullLottery/settings/list is sent to server');
         const endpoint = yield call(fullLotteries);
         const res = yield call(
-          endpoint['post'],
+          endpoint['get'],
           {
-            id : 'settings/list',
-            body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
-            }
+            id : 'settings',
+            // body: {
+            //   uid  : yield select(state => state.user.getAccount()),
+            //   token  : yield select(state => state.user.getToken()),
+            // }
           }
         );
         yield put({
-          type:'fullLottery/settings/list/succeeded',
-          payload:{settingList:res}
+          type:'fullLottery/setting/list/succeeded',
+          payload:{settingList:res.data}
         });
       }catch(err){
-        console.warn('fullLottery/settings/list/succeeded', 'failed to call.');
+        console.warn('fullLottery/setting/list/succeeded', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',
@@ -103,7 +106,7 @@ export default {
     //back 201
     *['fullLottery/settings/add']({payload}){
       try{
-        console.log('TODO: fullLottery/settings/add is sent to server');
+        console.log('TODO: fullLottery/setting/add is sent to server');
         const endpoint = yield call(fullLotteries);
         const res = yield call(
           endpoint['post'],
@@ -118,11 +121,11 @@ export default {
         );
 
         yield put({
-          type:'fullLottery/settings/add/succeeded',
+          type:'fullLottery/setting/add/succeeded',
           payload:res
         });
       }catch(err){
-        console.warn('fullLottery/settings/add', 'failed to call.');
+        console.warn('fullLottery/setting/add', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',
@@ -132,28 +135,28 @@ export default {
     },
 
     //back 202
-    *['fullLottery/settings/update']({payload}){
+    *['fullLottery/setting/update']({payload}){
       try{
-        console.log('TODO: fullLottery/settings/update is sent to server');
+        console.log('TODO: fullLottery/setting/update is sent to server');
         const endpoint = yield call(fullLotteries);
         const res = yield call(
           endpoint['post'],
           {
             id : 'settings/update',
             body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
+              // uid  : yield select(state => state.user.getAccount()),
+              // token  : yield select(state => state.user.getToken()),
               ...payload
             }
           }
         );
 
         yield put({
-          type:'fullLottery/settings/update/succeeded',
+          type:'fullLottery/setting/update/succeeded',
           payload:res
         });
       }catch(err){
-        console.warn('fullLottery/settings/update', 'failed to call.');
+        console.warn('fullLottery/setting/update', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',

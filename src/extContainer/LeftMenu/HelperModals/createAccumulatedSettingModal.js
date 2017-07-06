@@ -4,7 +4,7 @@ import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicke
 const Option = Select.Option;
 import moment from 'moment';
 import { accumulatedLotterySettingToServerData, accumulatedLotterySettingToLocalData } from '#/utils/dataProcessor';
-import {FILE_UPLOAD_URL_V2, UPLOAD_TOKEN, RULE_MAP} from '#/extConstants';
+import { RULE_MAP} from '#/extConstants';
 
 
 
@@ -46,16 +46,19 @@ export default class CreateAccumulatedSettingModal extends React.Component {
               </Select>)}
             </Form.Item>
             <Form.Item  label="奖池累计天数" {...formItemLayout} >
-                {getFieldDecorator('period',{rules:[{required:true,message:'请再次输入密码'},{validator:this.checkNumber}]})(<Input type="string" placeholder="累计天数" />)}
+                {getFieldDecorator('days',{rules:[{required:true,message:'奖池累计天数'},{validator:this.checkNumber}]})(<Input type="string" onChange={this.onPeriodChange} placeholder="累计天数" />)}
+            </Form.Item>
+            <Form.Item style={{display:"none"}} label="奖池累计时间(秒)" {...formItemLayout} >
+                {getFieldDecorator('period',{rules:[{required:true,message:'奖池累计时间'}]})(<Input  type="string"  />)}
             </Form.Item>
             <Form.Item  label="自动开奖" {...formItemLayout} >
-                {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox />)}
+                {getFieldDecorator('auto_open',{rules:[{required:false}]})(<Checkbox />)}
             </Form.Item>
             <Form.Item  label="自动续期" {...formItemLayout} >
-                {getFieldDecorator('auto_renew',{rules:[{required:true}]})(<Checkbox />)}
+                {getFieldDecorator('auto_renew',{rules:[{required:false}]})(<Checkbox />)}
             </Form.Item>
             <Form.Item  label="生效时间" {...formItemLayout} >
-                {getFieldDecorator('effect_time',{rules:[{required:true}]})(<DatePicker format="YYYY-MM-DD HH:mm:ss" showTime />)}
+                {getFieldDecorator('effect_time',{rules:[{required:true}]})(<DatePicker onChange={this.onEffectTimeChange} format="YYYY-MM-DD HH:mm:ss"  showTime />)}
             </Form.Item>
             <Form.Item  label="截止时间" {...formItemLayout} >
                 {getFieldDecorator('end_time',{rules:[{required:true}]})(<DatePicker disabled format="YYYY-MM-DD HH:mm:ss" showTime />)}
@@ -69,6 +72,32 @@ export default class CreateAccumulatedSettingModal extends React.Component {
         </Form>
       </Modal>
     );
+  }
+
+  onEffectTimeChange = (value, dateString) => {
+    const days = this.props.form.getFieldsValue().days;
+    let result =0;
+    if (days && days !== "" && parseInt(days)) {
+      result = value.valueOf() + parseInt(days) * 24*60*60*1000;
+      this.props.form.setFieldsValue({"end_time":new moment(result)});
+    }
+
+  }
+
+  onPeriodChange = (e) => {
+    e.preventDefault();
+    const effect_time = this.props.form.getFieldsValue().effect_time;
+    const days = parseInt(e.target.value);
+    let result = 0;
+    if (days) {
+      this.props.form.setFieldsValue({"period": days*24*60*60*1000})
+    }
+
+    if (effect_time && days) {
+      result = effect_time.valueOf() + days* 24 *60*60*1000;
+      this.props.form.setFieldsValue({"end_time":new moment(result)});
+    }
+
   }
 
   getModalConfig = () => {
@@ -149,8 +178,7 @@ export default class CreateAccumulatedSettingModal extends React.Component {
   next = e => {
     e.stopPropagation();
     const { overcoat, form } = this.props;
-    const { editMember } = overcoat;
-
+console.log("validateFieldsAndScroll");
     form.validateFieldsAndScroll((errors, values) => {
       if (!!errors) return;
       const formValue = form.getFieldsValue();
@@ -161,7 +189,7 @@ export default class CreateAccumulatedSettingModal extends React.Component {
       // console.log(serverdata);
       // console.log(accumulatedLotterySettingToLocalData(serverdata));
       this.props.dispatch({
-        type:`accumulatedLottery/settings/add`,
+        type:`accumulatedLottery/setting/add`,
         payload:accumulatedLotterySettingToServerData(formValue)
       })
 

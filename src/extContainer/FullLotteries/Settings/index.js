@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {push, replace} from 'redux-router';
 import {Table, Button, Form, Input, Modal, DatePicker, Pagination,Spin, Select, Row} from 'antd';
 
-import {API_ROOT_URL} from '#/extConstants';
+import {API_ROOT_URL, RULE_MAP} from '#/extConstants';
 
 import {format} from '#/utils';
 const FormItem = Form.Item;
@@ -59,49 +59,68 @@ export default class Settings extends React.Component{
     },
     {
       title:'总份额',
-      dataIndex:'total_amount',
+      dataIndex:'full_amount',
     },
     {
       title:'每注金额',
       dataIndex:'unit_price',
     },
     {
-      title:'创建时间',
-      dataIndex:'create_time',
-      render:(text, record) => (<span>{(new Date(text)).toLocaleString("zh-CN",{hour12:false})}</span>)
-    },
-    {
       title:'开奖规则',
       dataIndex:'rule',
-      render:(text, record) => (<span>{text?text:""}</span>)
+      render:(text, record) => {
+        let result = "";
+        RULE_MAP.map((rule) => {
+          if (text === rule.key) {
+            result = rule.des
+          }
+        });
+        return (<span>{result}</span>)
+      }
     },
     {
       title:'期数',
       dataIndex:'number',
     },
     {
+      title:"封面图片",
+      dataIndex:'face_img',
+      render:(text, record) => {
+        if (text == 0) {
+          return (<div style={{width:100, height:100}}></div>) ;
+        } else if (text && text !== "" && text !== 0) {
+            return (<img src={text} style={{width:100, height:100}}/>)
+          } else {
+            return (<div style={{width:100, height:100}}></div>) ;
+          }
+      }
+    },
+    {
       title:'自动开奖',
       dataIndex:'auto_open',
+      render:(text, record) => (<span>{text?'是':'否'}</span>)
     },
     {
       title:'自动续期',
       dataIndex:'auto_renew',
+      render:(text, record) => (<span>{text?'是':'否'}</span>)
     },
 
     {
-      title:'状态',
-      dataIndex:'state',
-      render:(text, record) => (
-        <span>
-          {text?text:0}
-        </span>
-      )
+      title:'创建时间',
+      dataIndex:'create_time',
+      render:(text, record) => (<span>{(new Date(text)).toLocaleString("zh-CN",{hour12:false})}</span>)
+    },
+    {
+      title:'修改时间',
+      dataIndex:'modify_time',
+      render:(text, record) => (<span>{(new Date(text)).toLocaleString("zh-CN",{hour12:false})}</span>)
     },
     {
       title:'操作',
       dataIndex:'status',
       render:(text, record) => {
-          return (<span><a href="#" onClick={this.open(record)}>开奖</a><a href="#" onClick={this.renew(record)}>续期</a><a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
+          return (<span><a href="#" onClick={this.open(record)}>开奖</a> | <a href="#" onClick={this.renew(record)}>续期</a> | <a href="#" onClick={this.handleEdit(record)}>编辑</a></span>)
         }
     }
   ];
@@ -143,10 +162,10 @@ export default class Settings extends React.Component{
 
   loadData = (payload) => {
     // this.setState({loading:true});
-    // this.props.dispatch({
-    //   type:'fullLottery/list',
-    //   payload:payload || {},
-    // });
+    this.props.dispatch({
+      type:'fullLottery/setting/list',
+      payload:payload || {},
+    });
   }
 
   handleSearch = e => {
@@ -186,7 +205,6 @@ export default class Settings extends React.Component{
 
   searchManageList = (values) => {
     let result = this.processSearchValues(values);
-    console.log(result);
     if (!result) {
       return;
     }

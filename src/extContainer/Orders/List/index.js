@@ -60,30 +60,34 @@ export default class List extends React.Component{
     },
     {
       title:'夺宝名称',
-      dataIndex:'name',
+      dataIndex:'lottery.name',
+    },
+    {
+      title:'配置号',
+      dataIndex:'lottery.setting.id'
     },
     {
       title:'期数',
-      dataIndex:'number',
+      dataIndex:'lottery.number',
     },
     {
       title:'开始时间',
-      dataIndex:'start_time',
+      dataIndex:'lottery.start_time',
       render:(text, record) => (<span>{text?new Date(parseInt(text)).toLocaleString():""}</span>)
     },
     {
       title:'开奖时间',
-      dataIndex:'lucky_time',
+      dataIndex:'lottery.lucky_time',
       render:(text, record) => (<span>{text?new Date(parseInt(text)).toLocaleString():""}</span>)
     },
     {
       title:'投注时间',
-      dataIndex:'create_time',
+      dataIndex:'time',
       render:(text, record) => (<span>{text?new Date(parseInt(text)).toLocaleString():""}</span>)
     },
     {
       title:'投注人',
-      dataIndex:'login_name',
+      dataIndex:'user.username',
       render:(text, record) => (
         <span>
           {text?text:0}
@@ -92,12 +96,21 @@ export default class List extends React.Component{
     },
     {
       title:'产品类型',
-      dataIndex:'lottery_type',
-      render:(text, record) => (
-        <span>
-          {text?text:0}
-        </span>
-      )
+      dataIndex:'lottery.type',
+      render:(text, record) => {
+        let result;
+        if (text == 0) {
+          result = "每周一注";
+        } else if (text == 1) {
+          result = "时时夺宝";
+        } else if (text == 2) {
+          result = "人满即开";
+        } else {
+          result = "";
+        }
+
+        return (<span>{result}</span>)
+      }
     },
     {
       title:'运营商',
@@ -109,40 +122,31 @@ export default class List extends React.Component{
       )
     },
     {
-      title:'投注人次',
-      dataIndex:'current_amount',
+      title:'投注金额',
+      dataIndex:'amount',
       render:(text, record) => (
         <span>
-          {text?text:0}
+          {record.amount * record.unit_price}
         </span>
       )
     },
     {
       title:'状态',
       dataIndex:'state',
-      render:(text, record) => (
-        <span>
-          {text?text:0}
-        </span>
-      )
-    },
-    {
-      title:'中奖号码',
-      dataIndex:'lucky_number',
-      render:(text, record) => (
-        <span>
-          {text?text:0}
-        </span>
-      )
-    },
-    {
-      title:'是否中奖',
-      dataIndex:'is_lucky',
-      render:(text, record) => (
-        <span>
-          {text?text:0}
-        </span>
-      )
+      render:(text, record) => {
+        let result;
+        if (record.lottery.state == 1 || record.lottery.state == 2 ) {
+          result = "未开奖";
+        } else if (record.lottery.state == 3 || record.is_lucky == 0 ) {
+          result = "未中奖";
+        } else if (record.is_lucky == 1) {
+          result = "已中奖"
+        } else {
+          result = "";
+        }
+
+        return (<span>{result}</span>)
+      }
     },
     {
       title:'操作',
@@ -180,7 +184,7 @@ export default class List extends React.Component{
             {getFieldDecorator('type')(<Input type="string"></Input>)}
           </FormItem>
           <FormItem label="投注人">
-            {getFieldDecorator('login_name')(<Input type="string"></Input>)}
+            {getFieldDecorator('uid')(<Input type="string"></Input>)}
           </FormItem>
 
         </Row>
@@ -211,20 +215,21 @@ export default class List extends React.Component{
         </div>*/}
 
         <div className="pull-right" style={{marginTop:20}}>
-          {(total>0 && !this.state.loading)?<Pagination showSizeChanger onShowSizeChange={this.onShowSizeChange} onChange={this.onChange} defaultCurrent={this.state.curPage} defaultPageSize={this.state.pageSize} total={total} />:null}
+          {(total>0 && !this.state.loading)?<Pagination showSizeChanger onShowSizeChange={this.onShowSizeChange} pageSizeOptions={['10','20','30']} onChange={this.onChange} defaultCurrent={this.state.curPage} defaultPageSize={this.state.pageSize} total={total} />:null}
         </div>
       </div>
     )
   }
 
   onShowSizeChange = (current, pageSize)=>{
+    console.log(current, pageSize);
       this.setState({curPage:current,pageSize:pageSize});
       let result = processOrderSearchForm(this.props.form.getFieldsValue());
 
       this.loadData({
         ...result,
-        curPage:page - 1,
-        pageSize:this.state.pageSize,
+        curPage:current,
+        pageSize:pageSize,
       })
   }
 
@@ -237,7 +242,7 @@ export default class List extends React.Component{
 
     this.loadData({
       ...result,
-      curPage:page - 1,
+      curPage:page,
       pageSize:this.state.pageSize,
     })
   }
@@ -245,17 +250,10 @@ export default class List extends React.Component{
   loadData = (payload) => {
     this.setState({loading:true});
 
-    if ( payload && payload.id) {
-      this.props.dispatch({
-        type:'order/id/search',
-        payload
-      })
-    } else {
       this.props.dispatch({
         type:'order/list',
         payload:payload || {},
       });
-    }
   }
 
   handleSearch = e => {
@@ -264,6 +262,7 @@ export default class List extends React.Component{
       curPage:1,
     })
     let searchForm = processOrderSearchForm(this.props.form.getFieldsValue());
+    console.log(searchForm);
     this.loadData({
       ...searchForm,
       curPage: 1,

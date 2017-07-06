@@ -16,18 +16,21 @@ export default {
     ['accumulatedLottery/list/succeeded'] (state, {payload}) {
       return {...state, ...payload};
     },
+    ['accumulatedLottery/setting/list/succeeded'] (state, {payload}) {
+      return {...state, ...payload};
+    },
     ['accumulatedLottery/setting/add/succeeded'] (state, {payload}) {
       let settingList = state.settingList;
       settingList.unshift(payload);
       return {...state, ...{settingList}};
     },
     ['accumulatedLottery/setting/update/succeeded'] (state, {payload}) {
-      let settingList = state.settingList;
-      settingList.map((setting) =>{
+      let settingList = [];
+      state.settingList.map((setting) =>{
         if (setting.id == payload.id) {
-          return payload;
+          settingList.push(payload);
         } else {
-          return setting;
+          settingList.push(setting);
         }
       })
       return {...state, ...{settingList}};
@@ -69,26 +72,26 @@ export default {
       }
     },
 
-    *['accumulatedLottery/settings/list']({payload}){
+    *['accumulatedLottery/setting/list']({payload}){
       try{
-        console.log('TODO: accumulatedLottery/settings/list is sent to server');
+        console.log('TODO: accumulatedLottery/setting/list is sent to server');
         const endpoint = yield call(accumulatedLotteries);
         const res = yield call(
-          endpoint['post'],
+          endpoint['get'],
           {
-            id : 'settings/list',
-            body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
-            }
+            id : 'settings',
+            // body: {
+            //   uid  : yield select(state => state.user.getAccount()),
+            //   token  : yield select(state => state.user.getToken()),
+            // }
           }
         );
         yield put({
-          type:'accumulatedLottery/settings/list/succeeded',
-          payload:{settingList:res}
+          type:'accumulatedLottery/setting/list/succeeded',
+          payload:{settingList:res.data}
         });
       }catch(err){
-        console.warn('accumulatedLottery/settings/list/succeeded', 'failed to call.');
+        console.warn('accumulatedLottery/setting/list/succeeded', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',
@@ -98,28 +101,28 @@ export default {
     },
 
     //back 201
-    *['accumulatedLottery/settings/add']({payload}){
+    *['accumulatedLottery/setting/add']({payload}){
       try{
-        console.log('TODO: accumulatedLottery/settings/add is sent to server');
+        console.log('TODO: accumulatedLottery/setting/add is sent to server');
         const endpoint = yield call(accumulatedLotteries);
         const res = yield call(
           endpoint['post'],
           {
             id : '/settings/add',
             body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
               ...payload
             }
           }
         );
 
+        console.log(payload);
+
         yield put({
-          type:'accumulatedLottery/settings/add/succeeded',
+          type:'accumulatedLottery/setting/add/succeeded',
           payload:res
         });
       }catch(err){
-        console.warn('accumulatedLottery/settings/add', 'failed to call.');
+        console.warn('accumulatedLottery/setting/add', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',
@@ -129,28 +132,28 @@ export default {
     },
 
     //back 202
-    *['accumulatedLottery/settings/update']({payload}){
+    *['accumulatedLottery/setting/update']({payload}){
       try{
-        console.log('TODO: accumulatedLottery/settings/update is sent to server');
+        console.log('TODO: accumulatedLottery/settings/update is sent to server', payload);
         const endpoint = yield call(accumulatedLotteries);
         const res = yield call(
           endpoint['post'],
           {
             id : 'settings/update',
             body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
+              // uid  : yield select(state => state.user.getAccount()),
+              // token  : yield select(state => state.user.getToken()),
               ...payload
             }
           }
         );
 
         yield put({
-          type:'accumulatedLottery/settings/update/succeeded',
+          type:'accumulatedLottery/setting/update/succeeded',
           payload:res
         });
       }catch(err){
-        console.warn('accumulatedLottery/settings/update', 'failed to call.');
+        console.warn('accumulatedLottery/setting/update', 'failed to call.');
         console.log(err);
         // yield put({
         //   type: 'notify/error',

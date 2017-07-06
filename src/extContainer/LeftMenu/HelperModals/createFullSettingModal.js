@@ -55,9 +55,7 @@ export default class CreateFullSettingModal extends React.Component {
                 {RULE_MAP.map((rule) => (<Option key={rule.key}>{rule.des}</Option>))}
               </Select>)}
             </Form.Item>
-            <Form.Item  label="奖金总额" {...formItemLayout} >
-                {getFieldDecorator('lucky_pool',{rules:[{required:true,message:'请输入奖金总额'},{validator:this.checkNumber}]})(<Input type="string" onChange={this.onLuckyPoolChange} placeholder="奖金总额" />)}
-            </Form.Item>
+
             <Form.Item  label="份额单价" {...formItemLayout} >
                 {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}]})(<Input type="string" onChange={this.onUnitPriceChange} placeholder="份额单价" />)}
             </Form.Item>
@@ -65,7 +63,10 @@ export default class CreateFullSettingModal extends React.Component {
                 {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}]})(<Input type="string" onChange={this.onLuckyRateChange} placeholder="游戏杀数" />)}
             </Form.Item>
             <Form.Item  label="所需份额" {...formItemLayout} >
-                {getFieldDecorator('total_amount',{rules:[{required:true,message:'请输入总份额'},{validator:this.checkNumber}]})(<Input disabled type="string" placeholder="总份额" />)}
+                {getFieldDecorator('total_amount',{rules:[{required:true,message:'请输入总份额'},{validator:this.checkNumber}]})(<Input onChange={this.onTotalAmountChange} type="string" placeholder="总份额" />)}
+            </Form.Item>
+            <Form.Item  label="奖金总额" {...formItemLayout} >
+                {getFieldDecorator('lucky_pool',{rules:[{required:true,message:'请输入奖金总额'},{validator:this.checkFloat}]})(<Input type="string" disabled  placeholder="奖金总额" />)}
             </Form.Item>
             <Form.Item label="产品图片" {...formItemLayout}>
                 <Upload {...uploadConfig} fileList={this.state.fileList}>
@@ -90,32 +91,31 @@ export default class CreateFullSettingModal extends React.Component {
 
   onUnitPriceChange =  (e) => {
     e.preventDefault();
-    const lucky_pool = this.props.form.getFieldsValue().lucky_pool;
+    const total_amount = this.props.form.getFieldsValue().total_amount;
     const lucky_rate = this.props.form.getFieldsValue().lucky_rate;
 
     if (parseInt(lucky_pool) && parseFloat(lucky_rate)) {
-        this.props.form.setFieldsValue({'total_amount': parseInt(lucky_pool) * parseFloat(lucky_rate)/parseInt(e.target.value) + ""});
+        this.props.form.setFieldsValue({'lucky_pool': parseInt(total_amount) *  parseFloat(lucky_rate) * parseInt(e.target.value) + ""});
     }
 
   }
 
-  onLuckyPoolChange =  (e) => {
+  onTotalAmountChange = e => {
     e.preventDefault();
     const unit_price = this.props.form.getFieldsValue().unit_price;
     const lucky_rate = this.props.form.getFieldsValue().lucky_rate;
-
-    if (parseInt(unit_price) && parseFloat(lucky_rate)) {
-        this.props.form.setFieldsValue({'total_amount':parseInt(e.target.value) * parseFloat(lucky_rate)/parseInt(unit_price) + ""});
-    }
+     if (parseInt(unit_price) && parseFloat(lucky_rate)) {
+         this.props.form.setFieldsValue({'lucky_pool':parseInt(e.target.value) * parseFloat(lucky_rate)*parseInt(unit_price) + ""});
+     }
   }
 
   onLuckyRateChange = (e) => {
     e.preventDefault();
     const unit_price = this.props.form.getFieldsValue().unit_price;
-    const lucky_pool = this.props.form.getFieldsValue().lucky_pool;
+    const total_amount = this.props.form.getFieldsValue().total_amount;
 
     if (parseInt(unit_price) && parseInt(lucky_pool)) {
-        this.props.form.setFieldsValue({'total_amount':parseInt(lucky_pool) * parseFloat(e.target.value)/parseInt(unit_price) + ""});
+        this.props.form.setFieldsValue({'lucky_pool':parseInt(total_amount) * parseFloat(e.target.value)*parseInt(unit_price) + ""});
     }
   }
 

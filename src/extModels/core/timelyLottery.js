@@ -16,18 +16,21 @@ export default {
     ['timelyLottery/list/succeeded'] (state, {payload}) {
       return {...state, ...payload};
     },
+    ['timelyLottery/setting/list/succeeded'] (state, {payload}) {
+      return {...state, ...payload};
+    },
     ['timelyLottery/setting/add/succeeded'] (state, {payload}) {
       let settingList = state.settingList;
       settingList.unshift(payload);
       return {...state, ...{settingList}};
     },
     ['timelyLottery/setting/update/succeeded'] (state, {payload}) {
-      let settingList = state.settingList;
-      settingList.map((setting) =>{
+      let settingList = [];
+      state.settingList.map((setting) =>{
         if (setting.id == payload.id) {
-          return payload;
+          settingList.push(payload);
         } else {
-          return setting;
+          settingList.push(setting);
         }
       })
       return {...state, ...{settingList}};
@@ -77,18 +80,18 @@ export default {
         console.log('TODO: timelyLottery/setting/list is sent to server');
         const endpoint = yield call(timelyLotteries);
         const res = yield call(
-          endpoint['post'],
+          endpoint['get'],
           {
-            id : 'setting/list',
-            body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
-            }
+            id : 'settings',
+            // body: {
+            //   uid  : yield select(state => state.user.getAccount()),
+            //   token  : yield select(state => state.user.getToken()),
+            // }
           }
         );
         yield put({
           type:'timelyLottery/setting/list/succeeded',
-          payload:{settingList:res}
+          payload:{settingList:res.data}
         });
       }catch(err){
         console.warn('timelyLottery/setting/list/succeeded', 'failed to call.');
@@ -141,8 +144,8 @@ export default {
           {
             id : 'settings/update',
             body: {
-              uid  : yield select(state => state.user.getAccount()),
-              token  : yield select(state => state.user.getToken()),
+              // uid  : yield select(state => state.user.getAccount()),
+              // token  : yield select(state => state.user.getToken()),
               ...payload
             }
           }

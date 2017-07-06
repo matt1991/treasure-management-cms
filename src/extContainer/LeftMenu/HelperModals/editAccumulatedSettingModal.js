@@ -4,6 +4,7 @@ import { Modal, Button, Form , Input,Icon,Checkbox,  Row, Col, Select, TimePicke
 const Option = Select.Option;
 import moment from 'moment';
 import { accumulatedLotterySettingToServerData, accumulatedLotterySettingToLocalData } from '#/utils/dataProcessor';
+import { RULE_MAP} from '#/extConstants';
 
 
 
@@ -22,6 +23,7 @@ export default class EditAccumulatedSettingModal extends React.Component {
   render() {
     const { overcoat, form } = this.props;
     const {editAccumulatedSetting} = overcoat;
+    let oriEditAccumulatedSetting = accumulatedLotterySettingToLocalData(editAccumulatedSetting);
     const modalConfig = this.getModalConfig();
     const formItemLayout = {
       labelCol: {
@@ -39,39 +41,46 @@ export default class EditAccumulatedSettingModal extends React.Component {
       <Modal visible={overcoat.editAccumulatedSettingModal} {...modalConfig}>
          <Form layout="horizontal">
            <Form.Item label="ID"  {...formItemLayout} >
-               {getFieldDecorator('id',{rules:[{required:true}], initialValue:editAccumulatedSetting.id})(<Input disabled />)}
+               {getFieldDecorator('id',{rules:[{required:true}], initialValue:oriEditAccumulatedSetting.id})(<Input disabled />)}
            </Form.Item>
             <Form.Item label="名字"  {...formItemLayout} >
-                {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}], initialValue:editAccumulatedSetting.name})(<Input placeholder="请输入名字" />)}
+                {getFieldDecorator('name',{rules:[{required:true,message:'请输入名字'}], initialValue:oriEditAccumulatedSetting.name})(<Input placeholder="请输入名字" />)}
             </Form.Item>
             <Form.Item label="开奖规则"  {...formItemLayout} >
-                {getFieldDecorator('rule',{rules:[{required:true}], initialValue:editAccumulatedSetting.rule})(<Select placeholder="请选择开奖规则" >
-                  <Option key="1">重庆时时彩</Option>
-                  <Option key="2">下注时间</Option>
-                  <Option key="3">重庆时时彩没有数据用下注时间</Option>
-                </Select>)}
+              {getFieldDecorator('rule',{rules:[{required:true}], initialValue:"2"})(<Select disabled placeholder="请选择开奖规则" >
+                {RULE_MAP.map((rule) => (<Option key={rule.key}>{rule.des}</Option>))}
+              </Select>)}
             </Form.Item>
             <Form.Item  label="奖池累计天数" {...formItemLayout} >
-                {getFieldDecorator('period',{rules:[{required:true,message:'请再次输入密码'},{validator:this.checkNumber}], initialValue:editAccumulatedSetting.period})(<Input type="string" placeholder="累计天数" />)}
+                {getFieldDecorator('days',{rules:[{required:true,message:'奖池累计天数'},{validator:this.checkNumber}], initialValue:oriEditAccumulatedSetting.days})(<Input type="string" onChange={this.onPeriodChange} placeholder="累计天数" />)}
             </Form.Item>
-            <Form.Item  label="截止时间" {...formItemLayout} >
-                {getFieldDecorator('end_time',{rules:[{required:true,message:'请输入电话'}]})(<TimePicker defaultValue={moment(editAccumulatedSetting.end_time, 'HH:mm:ss')} size="large" />)}
+            <Form.Item style={{display:"none"}} label="奖池累计时间(秒)" {...formItemLayout} >
+                {getFieldDecorator('period',{rules:[{required:true,message:'奖池累计时间'}], initialValue:oriEditAccumulatedSetting.period})(<Input  type="string"  />)}
             </Form.Item>
             <Form.Item  label="自动开奖" {...formItemLayout} >
-                {getFieldDecorator('auto_open',{rules:[{required:true}]})(<Checkbox defaultChecked={editAccumulatedSetting.auto_open} />)}
+                {getFieldDecorator('auto_open',{rules:[{required:false}],initialValue:oriEditAccumulatedSetting.auto_open})(<Checkbox defaultChecked={oriEditAccumulatedSetting.auto_open} />)}
             </Form.Item>
             <Form.Item  label="自动续期" {...formItemLayout} >
-                {getFieldDecorator('auto_renew',{rules:[{required:true}]})(<Checkbox defaultChecked={editAccumulatedSetting.auto_renew} />)}
+                {getFieldDecorator('auto_renew',{rules:[{required:false}], initialValue:oriEditAccumulatedSetting.auto_renew})(<Checkbox defaultChecked={oriEditAccumulatedSetting.auto_renew} />)}
             </Form.Item>
             <Form.Item  label="份额单价" {...formItemLayout} >
-                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}], initialValue:editAccumulatedSetting.unit_price})(<Input type="string" placeholder="份额单价" />)}
+                {getFieldDecorator('unit_price',{rules:[{required:true,message:'请输入份额单价'},{validator:this.checkNumber}], initialValue:oriEditAccumulatedSetting.unit_price})(<Input type="string" placeholder="份额单价" />)}
             </Form.Item>
             <Form.Item  label="游戏杀数" {...formItemLayout} >
-                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}], initialValue:editAccumulatedSetting.lucky_rate})(<Input type="string" placeholder="游戏杀数" />)}
+                {getFieldDecorator('lucky_rate',{rules:[{required:true,message:'请输入杀数'},{validator:this.checkFloat}], initialValue:oriEditAccumulatedSetting.lucky_rate})(<Input type="string" placeholder="游戏杀数" />)}
             </Form.Item>
         </Form>
       </Modal>
     );
+  }
+
+  onPeriodChange = (e) => {
+    e.preventDefault();
+    const days = parseInt(e.target.value);
+    if (days) {
+      this.props.form.setFieldsValue({"period": days*24*60*60*1000})
+    }
+
   }
 
   getModalConfig = () => {
@@ -136,13 +145,12 @@ export default class EditAccumulatedSettingModal extends React.Component {
   next = e => {
     e.stopPropagation();
     const { overcoat, form } = this.props;
-    const { editMember } = overcoat;
 
     form.validateFieldsAndScroll((errors, values) => {
       if (!!errors) return;
       const formValue = form.getFieldsValue();
       this.props.dispatch({
-        type:`accumulatedLottery/settings/update`,
+        type:`accumulatedLottery/setting/update`,
         payload:accumulatedLotterySettingToServerData(formValue)
       })
       this.props.dispatch({
