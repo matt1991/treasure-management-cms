@@ -90,16 +90,6 @@ export default class List extends React.Component{
         </span>
       )
     },
-    // {
-    //   title:'总奖池',
-    //   dataIndex:'total_amount',
-    //   key:'total_amount',
-    //   render:(text, record) => (
-    //     <span>
-    //       {text?record.total_amount*record.unit_price:0}
-    //     </span>
-    //   )
-    // },
     {
       title:'状态',
       dataIndex:'state',
@@ -203,8 +193,8 @@ export default class List extends React.Component{
 
       this.loadData({
         ...result,
-        curPage:page - 1,
-        pageSize:this.state.pageSize,
+        curPage:current,
+        pageSize:pageSize,
       })
   }
 
@@ -223,7 +213,7 @@ export default class List extends React.Component{
 
     this.loadData({
       ...result,
-      curPage:page - 1,
+      curPage:page,
       pageSize:this.state.pageSize,
     })
   }

@@ -203,8 +203,8 @@ export default class List extends React.Component{
 
       this.loadData({
         ...result,
-        curPage:page - 1,
-        pageSize:this.state.pageSize,
+        curPage:current,
+        pageSize:pageSize,
       })
   }
 
@@ -223,7 +223,7 @@ export default class List extends React.Component{
 
     this.loadData({
       ...result,
-      curPage:page - 1,
+      curPage:page,
       pageSize:this.state.pageSize,
     })
   }
